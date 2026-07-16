@@ -1,0 +1,75 @@
+name: Record Opinion
+
+on:
+  repository_dispatch:
+    types: [record-opinion]
+
+permissions:
+  contents: write
+
+jobs:
+  record:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify passphrase + append opinion
+        env:
+          OP_DIMENSION: ${{ github.event.client_payload.dimension }}
+          OP_AUTHOR: ${{ github.event.client_payload.author }}
+          OP_TEXT: ${{ github.event.client_payload.text }}
+          OP_TS: ${{ github.event.client_payload.ts }}
+          OP_PASSPHRASE: ${{ github.event.client_payload.passphrase }}
+          EXPECTED_PASSPHRASE: ${{ secrets.OPINION_PASSPHRASE }}
+        run: |
+          python3 <<'PYEOF'
+          import json
+          import os
+          import re
+          import sys
+
+          got = os.environ.get("OP_PASSPHRASE", "")
+          expected = os.environ.get("EXPECTED_PASSPHRASE", "")
+          if not expected or got != expected:
+              print("passphrase mismatch, rejecting", file=sys.stderr)
+              sys.exit(1)
+
+          dimension = os.environ.get("OP_DIMENSION", "").strip()
+          author = os.environ.get("OP_AUTHOR", "").strip()
+          text = os.environ.get("OP_TEXT", "").strip()
+          ts = os.environ.get("OP_TS", "").strip()
+
+          if not re.fullmatch(r"[a-z_]+", dimension or ""):
+              print("invalid dimension id, rejecting", file=sys.stderr)
+              sys.exit(1)
+          if not author or not text:
+              print("missing author/text, rejecting", file=sys.stderr)
+              sys.exit(1)
+          if len(author) > 60 or len(text) > 2000:
+              print("author/text too long, rejecting", file=sys.stderr)
+              sys.exit(1)
+
+          path = "opinions.json"
+          with open(path) as f:
+              opinions = json.load(f)
+
+          opinions.append({
+              "dimension": dimension,
+              "author": author,
+              "text": text,
+              "ts": ts,
+          })
+
+          with open(path, "w") as f:
+              json.dump(opinions, f, ensure_ascii=False, indent=2)
+              f.write("\n")
+          PYEOF
+
+      - name: Commit opinions.json
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add opinions.json
+          git diff --cached --quiet && echo "no change" && exit 0
+          git commit -m "chore: record designer opinion"
+          git push
