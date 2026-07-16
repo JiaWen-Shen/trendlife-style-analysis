@@ -28,7 +28,6 @@ jobs:
         run: |
           mkdir -p _site
           sed "s/__DISPATCH_TOKEN__/${DISPATCH_TOKEN}/" index.html > _site/index.html
-          sed "s/__DISPATCH_TOKEN__/${DISPATCH_TOKEN}/" materials.html > _site/materials.html
           cp opinions.json _site/opinions.json
       - uses: actions/upload-pages-artifact@v3
         with:

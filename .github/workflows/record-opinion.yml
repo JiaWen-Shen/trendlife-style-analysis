@@ -39,7 +39,7 @@ jobs:
           text = os.environ.get("OP_TEXT", "").strip()
           ts = os.environ.get("OP_TS", "").strip()
 
-          if not re.fullmatch(r"[a-z_]+", dimension or ""):
+          if not re.fullmatch(r"[a-z0-9_]+", dimension or ""):
               print("invalid dimension id, rejecting", file=sys.stderr)
               sys.exit(1)
           if not author or not text:
