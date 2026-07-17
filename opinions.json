@@ -4,5 +4,11 @@
     "author": "dogfood-test",
     "text": "端對端測試留言，確認後會刪除",
     "ts": "2026-07-17T02:00:00Z"
+  },
+  {
+    "dimension": "illustration_mascot_character",
+    "author": "dogfood-test-2",
+    "text": "端對端測試留言（redeploy修復後），確認後會刪除",
+    "ts": "2026-07-17T02:10:00Z"
   }
 ]
