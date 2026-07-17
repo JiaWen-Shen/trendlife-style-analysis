@@ -42,6 +42,12 @@ jobs:
               print("author/text too long, rejecting", file=sys.stderr)
               sys.exit(1)
 
+          # PII gate, final step before write: display given name only, no surname.
+          # Only strips space-separated "Given Surname" (English); CJK full names
+          # have no space to key off, so those rely on the identity-bar prompt
+          # asking for given name only at input time.
+          author = author.split()[0] if " " in author else author
+
           path = "opinions.json"
           with open(path) as f:
               opinions = json.load(f)
