@@ -13,26 +13,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Verify passphrase + append opinion
+      - name: Append opinion
         env:
           OP_DIMENSION: ${{ github.event.client_payload.dimension }}
           OP_AUTHOR: ${{ github.event.client_payload.author }}
           OP_TEXT: ${{ github.event.client_payload.text }}
           OP_TS: ${{ github.event.client_payload.ts }}
-          OP_PASSPHRASE: ${{ github.event.client_payload.passphrase }}
-          EXPECTED_PASSPHRASE: ${{ secrets.OPINION_PASSPHRASE }}
         run: |
           python3 <<'PYEOF'
           import json
           import os
           import re
           import sys
-
-          got = os.environ.get("OP_PASSPHRASE", "")
-          expected = os.environ.get("EXPECTED_PASSPHRASE", "")
-          if not expected or got != expected:
-              print("passphrase mismatch, rejecting", file=sys.stderr)
-              sys.exit(1)
 
           dimension = os.environ.get("OP_DIMENSION", "").strip()
           author = os.environ.get("OP_AUTHOR", "").strip()
