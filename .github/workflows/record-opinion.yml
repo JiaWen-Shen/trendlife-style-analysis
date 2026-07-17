@@ -6,6 +6,7 @@ on:
 
 permissions:
   contents: write
+  actions: write
 
 jobs:
   record:
@@ -65,3 +66,12 @@ jobs:
           git diff --cached --quiet && echo "no change" && exit 0
           git commit -m "chore: record designer opinion"
           git push
+
+      # a push made with the default GITHUB_TOKEN does NOT trigger other
+      # workflows' `on: push` (GitHub's anti-loop guard), so deploy.yml
+      # would never re-run and the live page would stay stale. Dispatch
+      # it explicitly instead.
+      - name: Trigger redeploy
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run deploy.yml --repo ${{ github.repository }}
