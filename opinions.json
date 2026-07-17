@@ -16,5 +16,11 @@
     "author": "k",
     "text": "g",
     "ts": "2026-07-17T02:00:25.230Z"
+  },
+  {
+    "dimension": "interface_screenshot_dark_mode",
+    "author": "Pei",
+    "text": "Dark mode的呈現，通常可以帶出戲劇張力，吸引目光，我們可以透過照片的色溫來呈現類似的效果，避免用大面積深色背景造成的厚重感。",
+    "ts": "2026-07-17T04:38:29.620Z"
   }
 ]
