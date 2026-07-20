@@ -1,0 +1,620 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>設計手法落地分析 — TrendLife Style Survey</title>
+<meta name="description" content="Pei 設計回應 × MKT 共識/分歧綜合分析：13 個設計手法的落地規則與收斂設計語言">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Work+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper: #efeae0;
+    --paper-raised: #f6f2e9;
+    --ink: #2a241c;
+    --ink-soft: #6b6153;
+    --line: #dcd4c3;
+    --accent: #a8681f;
+    --accent-ink: #7c4c14;
+    --adopt: #4c6f4f;
+    --adopt-bg: #e2e9de;
+    --avoid: #8f4234;
+    --avoid-bg: #ecdfd7;
+    --split: #85652b;
+    --split-bg: #ece3cd;
+    --shadow: 0 1px 2px rgba(42,36,28,0.06), 0 6px 20px rgba(42,36,28,0.05);
+    --radius: 10px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --paper: #1c1712;
+      --paper-raised: #241e17;
+      --ink: #ece3d3;
+      --ink-soft: #b3a690;
+      --line: #3a3226;
+      --accent: #d69a4e;
+      --accent-ink: #e8b16d;
+      --adopt: #8fb593;
+      --adopt-bg: #263329;
+      --avoid: #c9897c;
+      --avoid-bg: #382520;
+      --split: #cbab6a;
+      --split-bg: #362d1b;
+      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.35);
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper: #1c1712; --paper-raised: #241e17; --ink: #ece3d3; --ink-soft: #b3a690; --line: #3a3226;
+    --accent: #d69a4e; --accent-ink: #e8b16d; --adopt: #8fb593; --adopt-bg: #263329;
+    --avoid: #c9897c; --avoid-bg: #382520; --split: #cbab6a; --split-bg: #362d1b;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.35);
+  }
+  :root[data-theme="light"]{
+    --paper: #efeae0; --paper-raised: #f6f2e9; --ink: #2a241c; --ink-soft: #6b6153; --line: #dcd4c3;
+    --accent: #a8681f; --accent-ink: #7c4c14; --adopt: #4c6f4f; --adopt-bg: #e2e9de;
+    --avoid: #8f4234; --avoid-bg: #ecdfd7; --split: #85652b; --split-bg: #ece3cd;
+    --shadow: 0 1px 2px rgba(42,36,28,0.06), 0 6px 20px rgba(42,36,28,0.05);
+  }
+
+  *{ box-sizing: border-box; }
+  html{ background: var(--paper); }
+  body{
+    margin: 0; background: var(--paper); color: var(--ink);
+    font-family: "Work Sans", -apple-system, "Noto Sans TC", sans-serif;
+    line-height: 1.6; -webkit-font-smoothing: antialiased;
+  }
+  ::selection{ background: var(--accent); color: var(--paper); }
+
+  h1,h2,h3,h4{ font-family: "Fraunces", Georgia, "Noto Serif TC", serif; font-weight: 600; text-wrap: balance; margin: 0; color: var(--ink); }
+  a{ color: var(--accent-ink); }
+  .mono{ font-family: "IBM Plex Mono", ui-monospace, monospace; font-variant-numeric: tabular-nums; }
+
+  .wrap{ max-width: 920px; margin: 0 auto; padding: 0 1.5rem; }
+  .kicker{ font-family: "IBM Plex Mono", monospace; font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-soft); }
+
+  /* ---------- Masthead ---------- */
+  .masthead{ padding: 4.5rem 0 3rem; border-bottom: 1px solid var(--line); }
+  .masthead .kicker{ margin-bottom: 1rem; }
+  .masthead h1{ font-size: clamp(2rem, 5vw, 3.1rem); line-height: 1.12; max-width: 15ch; }
+  .masthead h1 em{ font-style: italic; color: var(--accent-ink); }
+  .masthead p.lede{ max-width: 58ch; font-size: 1.08rem; color: var(--ink-soft); margin-top: 1.2rem; }
+  .meta-row{ display:flex; flex-wrap:wrap; gap: 0.4rem 1.2rem; margin-top: 2rem; font-size: 0.85rem; color: var(--ink-soft); }
+  .meta-row span b{ color: var(--ink); font-weight: 600; }
+
+  .legend{ display:flex; flex-wrap:wrap; gap: 0.6rem; margin-top: 1.6rem; }
+  .chip{ display:inline-flex; align-items:center; gap:0.4rem; padding: 0.3rem 0.7rem; border-radius: 999px; font-size: 0.78rem; font-weight: 600; }
+  .chip.adopt{ background: var(--adopt-bg); color: var(--adopt); }
+  .chip.avoid{ background: var(--avoid-bg); color: var(--avoid); }
+  .chip.split{ background: var(--split-bg); color: var(--split); }
+
+  section{ padding: 3.4rem 0; border-bottom: 1px solid var(--line); }
+  section:last-of-type{ border-bottom: none; }
+  .section-head{ margin-bottom: 2rem; }
+  .section-head .kicker{ margin-bottom: 0.5rem; }
+  .section-head h2{ font-size: clamp(1.5rem, 3vw, 2rem); max-width: 26ch; }
+  .section-head p{ color: var(--ink-soft); max-width: 62ch; margin-top: 0.6rem; }
+
+  /* ---------- Layer explainer ---------- */
+  .layers{ display:grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+  .layer-card{ background: var(--paper-raised); border: 1px solid var(--line); border-radius: var(--radius); padding: 1.4rem 1.3rem; box-shadow: var(--shadow); }
+  .layer-card .num{ font-family:"IBM Plex Mono",monospace; font-size: 0.75rem; color: var(--accent-ink); font-weight:600; }
+  .layer-card h3{ font-size: 1.05rem; margin: 0.4rem 0 0.5rem; }
+  .layer-card p{ font-size: 0.9rem; color: var(--ink-soft); margin:0; }
+  .layer-arrow{ display:none; }
+
+  /* ---------- Expectations dashboard ---------- */
+  .dash-grid{ display:grid; grid-template-columns: 1.1fr 0.9fr; gap: 2rem; }
+  .bars{ display:flex; flex-direction:column; gap: 0.7rem; }
+  .bar-row{ display:grid; grid-template-columns: 5.2rem 1fr 3.2rem; align-items:center; gap: 0.6rem; font-size: 0.85rem; }
+  .bar-row .label{ font-weight:600; }
+  .bar-track{ background: var(--paper-raised); border:1px solid var(--line); border-radius: 999px; height: 10px; overflow:hidden; }
+  .bar-fill{ height:100%; border-radius:999px; background: var(--accent); }
+  .bar-row .val{ text-align:right; color: var(--ink-soft); }
+
+  .persona-cloud{ display:flex; flex-wrap:wrap; gap: 0.5rem; align-content:flex-start; }
+  .persona-chip{ background: var(--paper-raised); border:1px solid var(--line); border-radius: 999px; padding: 0.35rem 0.8rem; font-weight:600; }
+  .persona-chip .n{ font-family:"IBM Plex Mono",monospace; font-weight:500; color: var(--ink-soft); margin-left:0.35rem; font-size:0.8rem; }
+
+  .quote-block{ margin-top: 1.4rem; border-left: 3px solid var(--accent); padding-left: 1rem; font-style: italic; color: var(--ink-soft); font-size: 0.92rem; }
+  .quote-block cite{ display:block; font-style:normal; font-family:"IBM Plex Mono",monospace; font-size: 0.75rem; margin-top:0.35rem; color: var(--accent-ink); }
+
+  .mini-split{ display:flex; flex-direction:column; gap:0.55rem; margin-top: 1rem; }
+  .mini-split-row{ display:flex; align-items:center; gap:0.6rem; font-size:0.82rem; }
+  .mini-split-row .name{ width: 6.4rem; flex-shrink:0; color: var(--ink-soft); }
+  .mini-split-bar{ flex:1; display:flex; height:8px; border-radius:999px; overflow:hidden; background:var(--paper-raised); border:1px solid var(--line); }
+  .mini-split-bar div{ height:100%; }
+
+  /* ---------- Technique cards ---------- */
+  .tech-grid{ display:flex; flex-direction:column; gap: 1.1rem; }
+  .tech-card{ background: var(--paper-raised); border:1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); overflow:hidden; }
+  .tech-head{ display:flex; align-items:center; justify-content:space-between; gap:1rem; padding: 1.1rem 1.4rem; }
+  .tech-head h3{ font-size: 1.15rem; }
+  .tech-stats{ font-family:"IBM Plex Mono",monospace; font-size:0.72rem; color: var(--ink-soft); margin-top:0.25rem; }
+  .verdict{ flex-shrink:0; padding: 0.3rem 0.75rem; border-radius:999px; font-weight:700; font-size:0.75rem; white-space:nowrap; }
+  .verdict.adopt{ background:var(--adopt-bg); color:var(--adopt); }
+  .verdict.avoid{ background:var(--avoid-bg); color:var(--avoid); }
+  .verdict.split{ background:var(--split-bg); color:var(--split); }
+
+  .tech-body{ padding: 0 1.4rem 1.4rem; display:flex; flex-direction:column; gap: 0.9rem; }
+  .voice{ display:grid; grid-template-columns: 5.6rem 1fr; gap: 0.9rem; font-size: 0.9rem; }
+  .voice .who{ font-family:"IBM Plex Mono",monospace; font-size:0.72rem; letter-spacing:0.03em; text-transform:uppercase; color: var(--ink-soft); padding-top:0.15rem; }
+  .voice p{ margin:0; }
+  .voice.mkt .who{ color: var(--split); }
+  .voice.pei .who{ color: var(--accent-ink); }
+  .voice em.src{ font-style:normal; font-size:0.78rem; color:var(--ink-soft); }
+
+  .reasons{ display:grid; grid-template-columns: 1fr 1fr; gap: 1rem; font-size: 0.85rem; }
+  .reasons .grp b{ display:block; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.06em; margin-bottom:0.4rem; }
+  .reasons .grp.for b{ color: var(--adopt); }
+  .reasons .grp.against b{ color: var(--avoid); }
+  .reasons ul{ margin:0; padding-left: 1.1rem; }
+  .reasons li{ margin-bottom: 0.3rem; }
+  .reasons .card-ref{ font-family:"IBM Plex Mono",monospace; font-size:0.72rem; color: var(--ink-soft); }
+
+  .synth{ background: var(--paper); border: 1px dashed var(--accent); border-radius: var(--radius); padding: 0.9rem 1.1rem; font-size: 0.88rem; }
+  .synth b.tag{ font-family:"IBM Plex Mono",monospace; font-size:0.7rem; text-transform:uppercase; letter-spacing:0.08em; color: var(--accent-ink); display:block; margin-bottom:0.4rem; }
+
+  .rule{ background: var(--adopt-bg); border-radius: var(--radius); padding: 0.9rem 1.1rem; font-size: 0.88rem; color: var(--ink); }
+  .rule b.tag{ font-family:"IBM Plex Mono",monospace; font-size:0.7rem; text-transform:uppercase; letter-spacing:0.08em; color: var(--adopt); display:block; margin-bottom:0.4rem; }
+
+  /* ---------- Design language spec ---------- */
+  .spec-thesis{ background: var(--paper-raised); border:1px solid var(--line); border-radius: var(--radius); padding: 1.6rem 1.8rem; box-shadow: var(--shadow); margin-bottom: 1.6rem; }
+  .spec-thesis h3{ font-size: 1.4rem; color: var(--accent-ink); }
+  .spec-thesis p{ margin: 0.5rem 0 0; color: var(--ink-soft); }
+  .spec-grid{ display:grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+  .spec-card{ border: 1px solid var(--line); border-radius: var(--radius); padding: 1.1rem 1.3rem; }
+  .spec-card h4{ font-size: 0.95rem; margin-bottom: 0.6rem; }
+  .spec-card ul{ margin:0; padding-left: 1.1rem; font-size: 0.86rem; }
+  .spec-card li{ margin-bottom: 0.4rem; }
+  .spec-card li b{ color: var(--ink); }
+
+  .open-items{ background: var(--split-bg); border-radius: var(--radius); padding: 1.4rem 1.6rem; }
+  .open-items h4{ font-size:1rem; margin-bottom:0.7rem; color: var(--split); }
+  .open-items ul{ margin:0; padding-left:1.2rem; font-size:0.88rem; }
+  .open-items li{ margin-bottom:0.5rem; }
+
+  footer{ padding: 3rem 0 5rem; }
+  footer .wrap{ display:flex; flex-direction:column; gap:0.6rem; }
+  footer p{ font-size:0.82rem; color: var(--ink-soft); margin:0; }
+  footer a{ color: var(--ink-soft); text-decoration: underline; }
+
+  @media (max-width: 760px){
+    .layers{ grid-template-columns: 1fr; }
+    .dash-grid{ grid-template-columns: 1fr; }
+    .reasons{ grid-template-columns: 1fr; }
+    .spec-grid{ grid-template-columns: 1fr; }
+    .voice{ grid-template-columns: 1fr; }
+    .voice .who{ padding-top:0; }
+  }
+
+  a:focus-visible, .tech-card:focus-visible{ outline: 2px solid var(--accent); outline-offset: 2px; }
+  @media (prefers-reduced-motion: reduce){ *{ scroll-behavior: auto !important; } }
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="kicker">TrendLife Style Survey · 落地分析 · 2026-07-20</div>
+    <h1>溫暖，但<em>克制</em>。<br>資訊優先於氛圍。</h1>
+    <p class="lede">8 位 MKT 同仁對 14 張設計卡片的評分與意見，加上設計師 Pei 對 13 個設計手法的專業回應——這份報告把兩者疊在一起，逐手法收斂出可以直接落地的設計語言。</p>
+    <div class="meta-row">
+      <span>受訪 <b>8</b> 人</span>
+      <span>評分卡片 <b>14</b> 張</span>
+      <span>設計手法 <b>13</b> 項</span>
+      <span>Pei 回應 <b>12/13</b></span>
+    </div>
+    <div class="legend">
+      <span class="chip adopt">採用 — 共識高分</span>
+      <span class="chip avoid">避免 — 共識低分</span>
+      <span class="chip split">分歧 — 意見不一</span>
+    </div>
+  </div>
+</header>
+
+<section class="method">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="kicker">方法</div>
+      <h2>三層閱讀順序</h2>
+      <p>Pei 的意見不是跟 MKT 評分並列的獨立資料——她是在看過頁面已經算好的共識/分歧結果之後，才逐手法寫下的專業回應。順序不能反過來讀。</p>
+    </div>
+    <div class="layers">
+      <div class="layer-card">
+        <div class="num">LAYER 1</div>
+        <h3>MKT 共識與分歧</h3>
+        <p>112 筆評分依標準差自動分兩組：sd≤25 視為共識（附採用/避免判定），sd&gt;25 視為分歧（附逐條贊成/反對原話）。</p>
+      </div>
+      <div class="layer-card">
+        <div class="num">LAYER 2</div>
+        <h3>Pei 的專業回應</h3>
+        <p>設計師讀過 Layer 1 的判定後，針對同一 13 個手法標籤逐一寫下設計解讀——為什麼會這樣分歧、怎麼做才對。</p>
+      </div>
+      <div class="layer-card">
+        <div class="num">LAYER 3</div>
+        <h3>收斂設計語言</h3>
+        <p>把 Pei 的判斷疊在 MKT 的期望（品牌排名、人格標籤、內容配比）上，產出可以直接執行的規則。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="expectations">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="kicker">Layer 1 背景</div>
+      <h2>MKT 的整體期望</h2>
+      <p>在看逐手法細節之前，先看 8 人共同的傾向——這是 Layer 3 收斂時的另一半依據。</p>
+    </div>
+    <div class="dash-grid">
+      <div>
+        <div class="kicker" style="margin-bottom:0.8rem">品牌排名（平均分）</div>
+        <div class="bars">
+          <div class="bar-row"><span class="label">Copilot</span><span class="bar-track"><span class="bar-fill" style="width:54.8%"></span></span><span class="val mono">54.8</span></div>
+          <div class="bar-row"><span class="label">Claude</span><span class="bar-track"><span class="bar-fill" style="width:49.8%"></span></span><span class="val mono">49.8</span></div>
+          <div class="bar-row"><span class="label">Gemini</span><span class="bar-track"><span class="bar-fill" style="width:42.5%"></span></span><span class="val mono">42.5</span></div>
+          <div class="bar-row"><span class="label">NordVPN</span><span class="bar-track"><span class="bar-fill" style="width:36%"></span></span><span class="val mono">36.0</span></div>
+        </div>
+        <p style="font-size:0.82rem;color:var(--ink-soft);margin-top:0.7rem">Gemini 印象最好但逐卡分數最低、分歧度也最高（sd 30.6）——整體調性被欣賞，不代表每張卡都執行到位。</p>
+
+        <div class="kicker" style="margin:1.6rem 0 0.8rem">Tone / Wording / Density</div>
+        <div class="mini-split">
+          <div class="mini-split-row"><span class="name">Tone</span><span class="mini-split-bar"><div style="width:63%;background:var(--accent)"></div><div style="width:37%;background:var(--line)"></div></span><span class="mono" style="font-size:0.72rem">Casual 47 · Formal 28</span></div>
+          <div class="mini-split-row"><span class="name">Wording</span><span class="mini-split-bar"><div style="width:63%;background:var(--accent)"></div><div style="width:37%;background:var(--line)"></div></span><span class="mono" style="font-size:0.72rem">口語 38 · 專業 22</span></div>
+          <div class="mini-split-row"><span class="name">Density</span><span class="mini-split-bar"><div style="width:60%;background:var(--accent)"></div><div style="width:40%;background:var(--line)"></div></span><span class="mono" style="font-size:0.72rem">精簡 50 · 詳盡 33</span></div>
+        </div>
+      </div>
+
+      <div>
+        <div class="kicker" style="margin-bottom:0.8rem">人格標籤頻率（8 人自選）</div>
+        <div class="persona-cloud">
+          <span class="persona-chip" style="font-size:1.15rem">Warm<span class="n">8/8</span></span>
+          <span class="persona-chip" style="font-size:1.05rem">Approachable<span class="n">7/8</span></span>
+          <span class="persona-chip" style="font-size:0.98rem">Trustworthy<span class="n">6/8</span></span>
+          <span class="persona-chip" style="font-size:0.88rem">Professional<span class="n">4/8</span></span>
+          <span class="persona-chip" style="font-size:0.8rem">Technical<span class="n">2/8</span></span>
+          <span class="persona-chip" style="font-size:0.8rem">Playful<span class="n">2/8</span></span>
+          <span class="persona-chip" style="font-size:0.8rem">Calm<span class="n">2/8</span></span>
+          <span class="persona-chip" style="font-size:0.78rem">Premium<span class="n">1/8</span></span>
+        </div>
+        <p style="font-size:0.82rem;color:var(--ink-soft);margin-top:0.7rem">Warm、Approachable、Trustworthy 是唯三跨全員的共識座標，其餘是個案加分項。</p>
+
+        <div class="quote-block">
+          「As TrendLife moves away from TrendMicro, it is my belief that we should reduce the use of our red as it is a very aggressive colour.」
+          <cite>Thomaz · 品牌轉型脈絡</cite>
+        </div>
+        <div class="quote-block">
+          「50% ui + 大補帖(字少) / 30% tips·data·scam alert(輕鬆) / 20% 生活場景 ugc(真人relatable)」
+          <cite>Sylvia · 內容配比公式，無人反對</cite>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="consensus">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="kicker">Layer 1 → Layer 2 · 共識組</div>
+      <h2>分歧度最低的 5 個手法</h2>
+      <p>sd≤25，頁面已直接判定採用或避免。</p>
+    </div>
+    <div class="tech-grid">
+
+      <article class="tech-card">
+        <div class="tech-head">
+          <div><h3>對話框／聊天氣泡疊加</h3><div class="tech-stats">avg 60.0 · sd 24.8 · n=8</div></div>
+          <span class="verdict adopt">採用</span>
+        </div>
+        <div class="tech-body">
+          <div class="voice mkt"><span class="who">MKT</span><p>文字包進氣泡模擬真人對話，建立臨場感、幫圖示與資訊分層 <em class="src">Thomaz·c04</em>；但同手法用在調性混亂的卡一樣救不了 <em class="src">Thomaz·c10</em>。</p></div>
+          <div class="voice pei"><span class="who">Pei</span><p>「單獨使用對話氣泡，比起使用一整頁完整的UI截圖，更容易營造出輕鬆感，Highlight 其中某個氣泡的手法，也是在模擬動態感，讓版面變得生動。」</p></div>
+          <div class="rule"><b class="tag">設計手法</b>氣泡單獨呈現，不與整頁 UI 截圖混搭同卡；用 highlight 單一氣泡模擬動態感，不要整組並列。</div>
+        </div>
+      </article>
+
+      <article class="tech-card">
+        <div class="tech-head">
+          <div><h3>真人生活情境多圖拼貼</h3><div class="tech-stats">avg 51.6 · sd 25.0 · n=11</div></div>
+          <span class="verdict adopt">採用</span>
+        </div>
+        <div class="tech-body">
+          <div class="voice mkt"><span class="who">MKT</span><p>真實場景照片＋對話框疊加好看、適合堆疊情感訴求 <em class="src">Sylvia·c06</em>；但同卡也被說排版太複雜、文字太多沒重點 <em class="src">Thomaz·c06</em>。</p></div>
+          <div class="voice pei"><span class="who">Pei</span><p>「圖片跨頁呈現，會吸引人持續往右滑動而想看更多。排版的變化性創造活潑感，是很好的說故事手法。」</p></div>
+          <div class="synth"><b class="tag">尚未完全對齊</b>Pei 肯定「排版變化＝活潑」，但沒回應「太複雜」的疑慮——活潑跟雜亂的分界線仍待跟 Pei 確認（見文末待補）。</div>
+        </div>
+      </article>
+
+      <article class="tech-card">
+        <div class="tech-head">
+          <div><h3>介面截圖（深色模式）</h3><div class="tech-stats">avg 53.5 · sd 22.0 · n=4</div></div>
+          <span class="verdict adopt">採用</span>
+        </div>
+        <div class="tech-body">
+          <div class="voice mkt"><span class="who">MKT</span><p>大膽深色介面是有趣延伸、適合特定用途 <em class="src">Thomaz·c13 gemini</em>；但同是深色介面用在別品牌被嫌生硬冷淡 <em class="src">Thomaz·c08 nordvpn</em>。</p></div>
+          <div class="voice pei"><span class="who">Pei</span><p>「Dark mode 的呈現，通常可以帶出戲劇張力，吸引目光，我們可以透過照片的色溫來呈現類似的效果，避免用大面積深色背景造成的厚重感。」</p></div>
+          <div class="rule"><b class="tag">設計手法</b>不用大面積深色 UI 背景；戲劇張力改用照片色溫營造，這就是「用對品牌」與「顯得冷」的分界。</div>
+        </div>
+      </article>
+
+      <article class="tech-card">
+        <div class="tech-head">
+          <div><h3>數據圖表／比較表格</h3><div class="tech-stats">avg 54.3 · sd 13.9 · n=3</div></div>
+          <span class="verdict adopt">採用</span>
+        </div>
+        <div class="tech-body">
+          <div class="voice mkt"><span class="who">MKT</span><p>標題主導、表格資料當輔助佐證，文案圖像比例拿捏得宜、掃過去就看得懂重點 <em class="src">Thomaz·c02</em>。</p></div>
+          <div class="voice pei"><span class="who">Pei</span><p>「標題能清楚傳達資訊，表格資料當做輔助，能吸引人點開放大看細節。在充滿UI或是圖片的輪播中插入這類表格，很容易能突顯資訊。」</p></div>
+          <div class="rule"><b class="tag">設計手法</b>標題主導＋表格輔助佐證；固定穿插在 UI／照片輪播中製造對比。全站分歧度最低，最適合定為固定手法。</div>
+        </div>
+      </article>
+
+      <article class="tech-card">
+        <div class="tech-head">
+          <div><h3>原文／改寫對照卡</h3><div class="tech-stats">avg 32.6 · sd 21.7 · n=5</div></div>
+          <span class="verdict avoid">避免</span>
+        </div>
+        <div class="tech-body">
+          <div class="voice mkt"><span class="who">MKT</span><p>概念有落差，沒打到人際溝通核心，只剩畫面效果 <em class="src">Thomaz·c07</em>；跟現有做法比沒有進步，偏平淡 <em class="src">Peter·c07</em>。</p></div>
+          <div class="voice pei"><span class="who">Pei</span><p style="color:var(--ink-soft);font-style:italic">尚無設計師意見——13 手法裡唯一的缺口。</p></div>
+          <div class="synth"><b class="tag">待補</b>MKT 已明確判定避免，Pei 未表態不影響結論，但仍是完整度缺口。</div>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<section class="divergent">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="kicker">Layer 1 → Layer 2 · 分歧組</div>
+      <h2>意見不一的 8 個手法</h2>
+      <p>sd&gt;25，同一手法內有人給高分有人給低分。Pei 的回應多半解釋了「為什麼會分歧」，並直接轉化成可執行的落地規則。</p>
+    </div>
+    <div class="tech-grid">
+
+      <article class="tech-card">
+        <div class="tech-head">
+          <div><h3>拼貼／多圖網格</h3><div class="tech-stats">avg 44.7 · sd 26.1 · n=19</div></div>
+          <span class="verdict split">分歧</span>
+        </div>
+        <div class="tech-body">
+          <div class="reasons">
+            <div class="grp for"><b>贊成</b><ul>
+              <li>拼貼適合 scam alert 警示型內容 <span class="card-ref">Sylvia·c10</span></li>
+              <li>原創、意外的網格感很吸睛 <span class="card-ref">Thomaz·c14</span></li>
+              <li>UGC 感有意思，有特別分開處理 <span class="card-ref">Sylvia·c14</span></li>
+            </ul></div>
+            <div class="grp against"><b>反對</b><ul>
+              <li>風格四散、訊息幼稚，幽默感沒接住 <span class="card-ref">Thomaz·c10</span></li>
+              <li>太通用，沒有品牌識別度 <span class="card-ref">Peter·c10</span></li>
+              <li>分割版面太重，畫面偏沈重 <span class="card-ref">Thomaz·c11</span></li>
+            </ul></div>
+          </div>
+          <div class="voice pei"><span class="who">Pei</span><p>「這是IG的grid view而非同一則輪播，所以看來混雜插畫和真人風格。細看它的版型配置，幾何分割，連同配色都有整體感，也很善用留白給予喘息空間，避免資訊過載。」</p></div>
+          <div class="rule"><b class="tag">設計手法</b>只用在「IG grid 陳列」情境，不套用在單則輪播卡；套用時三要素缺一不可——幾何分割版型、跨圖統一色板、留白呼吸感。分歧多半源自把 grid view 當輪播卡評分的載體誤判，不是手法本身差。</div>
+        </div>
+      </article>
+
+      <article class="tech-card">
+        <div class="tech-head">
+          <div><h3>手機介面 mockup（含邊框）</h3><div class="tech-stats">avg 57.5 · sd 26.3 · n=11</div></div>
+          <span class="verdict split">分歧</span>
+        </div>
+        <div class="tech-body">
+          <div class="reasons">
+            <div class="grp for"><b>贊成</b><ul>
+              <li>版面乾淨，資訊量夠但不會像牆一樣密 <span class="card-ref">Thomaz·c05</span></li>
+            </ul></div>
+            <div class="grp against"><b>反對</b><ul>
+              <li>配色不突出，懸浮元素擺放突兀、字多到眼花撩亂 <span class="card-ref">Sylvia·c05</span></li>
+              <li>分割版面太重，畫面偏沈重 <span class="card-ref">Thomaz·c11</span></li>
+            </ul></div>
+          </div>
+          <div class="voice pei"><span class="who">Pei</span><p>「文字和UI的圖文配置變化太大，讓整體看起來顯得雜亂。通常以完整UI介面呈現的，意圖不在讓人看UI細節，而是聚焦在標題，暗紅色讀起來負擔很大。」</p></div>
+          <div class="rule"><b class="tag">設計手法</b>固定圖文配置模板，不逐卡自由變化排版；視覺焦點鎖定標題文字，不是 UI 截圖細節；色板明確排除暗紅，改用中性或暖色底。</div>
+        </div>
+      </article>
+
+      <article class="tech-card">
+        <div class="tech-head">
+          <div><h3>介面截圖（淺色模式）</h3><div class="tech-stats">avg 55.7 · sd 27.5 · n=15</div></div>
+          <span class="verdict split">分歧</span>
+        </div>
+        <div class="tech-body">
+          <div class="reasons">
+            <div class="grp for"><b>贊成</b><ul>
+              <li>適合特定 pillar/通路（B2B、LinkedIn、X） <span class="card-ref">Thomaz·c01</span></li>
+              <li>標題敘事與輔助圖像比例拿捏得宜 <span class="card-ref">Thomaz·c02</span></li>
+              <li>標題字少、用 UI 說話，比資訊大補帖讚 <span class="card-ref">Sylvia·c02</span></li>
+              <li>簡單易懂，有 UI 說明 <span class="card-ref">Sylvia·c01</span></li>
+            </ul></div>
+            <div class="grp against"><b>反對</b><ul>
+              <li>缺乏靈感、雜亂，文字難讀顯得粗糙 <span class="card-ref">Thomaz·c12</span></li>
+              <li>資訊量太少，版面可能被浪費 <span class="card-ref">Linda·c01</span></li>
+            </ul></div>
+          </div>
+          <div class="voice pei"><span class="who">Pei</span><p>「利用分色背景來切分section，呈現的UI有些局部放大，有些出現全部，有些拉遠來呈現overview，這種豐富的手法讓整個輪播不顯呆板，又有很好的整體性。」</p></div>
+          <div class="rule"><b class="tag">設計手法</b>分色背景區塊切分 section；同一輪播內至少混搭兩種 UI 呈現尺度（局部特寫＋全貌 overview）。做到位＝整體性佳，沒做到＝太空或太亂，解釋了「資訊太少」與「雜亂」為何能同時出現。</div>
+        </div>
+      </article>
+
+      <article class="tech-card">
+        <div class="tech-head">
+          <div><h3>插畫／吉祥物角色</h3><div class="tech-stats">avg 55.0 · sd 28.2 · n=3</div></div>
+          <span class="verdict split">分歧</span>
+        </div>
+        <div class="tech-body">
+          <div class="reasons">
+            <div class="grp for"><b>贊成</b><ul>
+              <li>概念本身不錯 <span class="card-ref">Thomaz·c06</span></li>
+            </ul></div>
+            <div class="grp against"><b>反對</b><ul>
+              <li>執行不夠聚焦，文字太多、敘事線不夠直接 <span class="card-ref">Thomaz·c06</span></li>
+            </ul></div>
+          </div>
+          <div class="voice pei"><span class="who">Pei</span><p>「可愛角色瞬間拉近距離⋯然而角色的使用是雙面刃，光是物種或風格定調就廢時曠日，或許能為各式素材增添視覺焦點，但卻延長了製作時間，也未必能在巿場上收到等值反饋。」</p></div>
+          <div class="rule"><b class="tag">設計手法（產製規則）</b>僅在已有既定風格庫（不需重新定調物種／風格）且有明確活動或情感訴求時使用；風格未定案前不排入主力產出排程，需先評估成本效益。</div>
+        </div>
+      </article>
+
+      <article class="tech-card">
+        <div class="tech-head">
+          <div><h3>純文字標語（大字重／少圖）</h3><div class="tech-stats">avg 53.7 · sd 29.5 · n=19</div></div>
+          <span class="verdict split">分歧</span>
+        </div>
+        <div class="tech-body">
+          <div class="reasons">
+            <div class="grp for"><b>贊成</b><ul>
+              <li>像雜誌大膽有力，短句衝擊感強 <span class="card-ref">Thomaz·c03</span></li>
+              <li>大字表示很好、易讀 <span class="card-ref">Sylvia·c09</span></li>
+              <li>中性色襯托高對比圖示，不會太吵 <span class="card-ref">Thomaz·c04</span></li>
+            </ul></div>
+            <div class="grp against"><b>反對</b><ul>
+              <li>像電信廣告，玻璃元素模糊混在一起 <span class="card-ref">Thomaz·c09</span></li>
+              <li>太通用，缺乏獨特識別度 <span class="card-ref">Peter·c04</span></li>
+            </ul></div>
+          </div>
+          <div class="voice pei"><span class="who">Pei</span><p>「有許多留白空間，更能突顯短標題和圖片要傳達的精神。簡潔耐看，泛用性高。」</p></div>
+          <div class="rule"><b class="tag">設計手法</b>固定短標題（Pei 強調「短」是留白效果成立的前提）＋主視覺周圍保留明顯留白＋固定或輪替品牌識別配色／字重。「泛用性高」與「沒個性」是同一件事的兩面，需節制用量（留白具體比例待補）。</div>
+        </div>
+      </article>
+
+      <article class="tech-card">
+        <div class="tech-head">
+          <div><h3>3D 玻璃質感圖示</h3><div class="tech-stats">avg 44.2 · sd 30.7 · n=9</div></div>
+          <span class="verdict split">分歧</span>
+        </div>
+        <div class="tech-body">
+          <div class="reasons">
+            <div class="grp for"><b>贊成</b><ul>
+              <li>中性色襯托高對比圖示，帶出重點又不搶戲 <span class="card-ref">Thomaz·c04</span></li>
+            </ul></div>
+            <div class="grp against"><b>反對</b><ul>
+              <li>玻璃質感元素彼此混在一起，界線不清 <span class="card-ref">Thomaz·c09</span></li>
+            </ul></div>
+          </div>
+          <div class="voice pei"><span class="who">Pei</span><p>「以現代設計趨勢，這種3D玻璃質感搭上暗色調會顯得較為過時（即使用於背景圖），但特大標題與內文的大小比夠大，整體視覺張力強。」</p></div>
+          <div class="rule"><b class="tag">設計手法</b>圖示改用平面色塊或簡化幾何造型，玻璃擬態＋暗色調底整組退場；保留「特大標題／內文比例」這個張力來源，轉嫁到新材質延續。</div>
+        </div>
+      </article>
+
+      <article class="tech-card">
+        <div class="tech-head">
+          <div><h3>紀實／新聞攝影人像</h3><div class="tech-stats">avg 42.5 · sd 31.1 · n=8</div></div>
+          <span class="verdict split">分歧</span>
+        </div>
+        <div class="tech-body">
+          <div class="reasons">
+            <div class="grp for"><b>贊成</b><ul>
+              <li>像雜誌大膽有力，但需整套 campaign 配套執行 <span class="card-ref">Thomaz·c03</span></li>
+            </ul></div>
+            <div class="grp against"><b>反對</b><ul>
+              <li>缺乏靈感、雜亂，文字難讀顯得粗糙 <span class="card-ref">Thomaz·c12</span></li>
+              <li>人物比例過大，壓迫感重 <span class="card-ref">Linda·c03</span></li>
+            </ul></div>
+          </div>
+          <p style="font-size:0.8rem;color:var(--ink-soft);margin:0">同手法也有 75-82 分的高分卡，只是沒人留下文字說明原因。</p>
+          <div class="voice pei"><span class="who">Pei</span><p>「這種"讓照片說話"的手法，極度仰賴照片品質，不呈現任何標題與文字，更像是編輯精選的集錦。適合用來打造品牌形象，而非傳達資訊。」</p></div>
+          <div class="rule"><b class="tag">設計手法</b>只派給「品牌形象」類貼文，執行時完全不加標題／文案覆蓋層，純靠照片敘事。這條解開了「為何有高分卡沒人解釋」——用對品牌形象用途就默默拿高分，誤用在傳達資訊就變成負評。若內容目的是傳達資訊，改用其他手法。</div>
+        </div>
+      </article>
+
+      <article class="tech-card">
+        <div class="tech-head">
+          <div><h3>產品實拍／渲染（硬體特寫）</h3><div class="tech-stats">avg 31.3 · sd 35.5 · n=3</div></div>
+          <span class="verdict split">分歧</span>
+        </div>
+        <div class="tech-body">
+          <div class="reasons">
+            <div class="grp for"><b>贊成</b><ul>
+              <li>一眼認出是 Google，光影跟對比質感精品、有共鳴 <span class="card-ref">Peter·c13</span></li>
+            </ul></div>
+            <div class="grp against"><b>反對</b><ul>
+              <li>另外兩筆只給 0 分、13 分，沒有留下文字說明原因</li>
+            </ul></div>
+          </div>
+          <div class="voice pei"><span class="who">Pei</span><p>「光影呈現表現出神祕感，成功打造出高科技產品的調性。但文字內容過多，使整體圖文比變成一比一，削弱了張力。」</p></div>
+          <div class="rule"><b class="tag">設計手法</b>文案壓到一行標語等級，圖文比明顯偏向圖片（不可逼近 1:1）；靠光影／對比營造神祕高科技調性。Pei 補上了那兩筆低分沒人解釋的具體原因——全站唯一一條被「數值化診斷」出失敗根因的案例。</div>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<section class="synthesis">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="kicker">Layer 3</div>
+      <h2>收斂設計語言</h2>
+      <p>Pei 的專業判斷疊在 MKT 的期望上，得出的規則。</p>
+    </div>
+
+    <div class="spec-thesis">
+      <div class="kicker">設計方向</div>
+      <h3>Warm minimalism, informative but restrained.</h3>
+      <p>溫暖克制的極簡風格，資訊型內容優先於純氛圍塑造；避免冷科技感、避免暗紅色、避免大面積暗色 UI、淘汰過時玻璃質感。</p>
+    </div>
+
+    <div class="spec-grid">
+      <div class="spec-card">
+        <h4>色彩</h4>
+        <ul>
+          <li>暖色調優先；戲劇張力靠<b>照片色溫</b>取代深色 UI 背景</li>
+          <li>淘汰大面積暗紅（呼應品牌脫離 TrendMicro 的期望）</li>
+          <li>3D 玻璃質感＋暗色調整組退場</li>
+        </ul>
+      </div>
+      <div class="spec-card">
+        <h4>手法分層</h4>
+        <ul>
+          <li><b>固定採用</b>：Chat bubble 單獨呈現、Data chart 穿插輪播、Dark mode 改用色溫</li>
+          <li><b>明確避免</b>：Annotated text card</li>
+          <li><b>條件採用</b>：Documentary 攝影限品牌形象用途；Mascot 先評估 ROI</li>
+        </ul>
+      </div>
+      <div class="spec-card">
+        <h4>執行細節（手法沒問題，做工決定成敗）</h4>
+        <ul>
+          <li>Interface light mode：UI 尺度要混搭（局部＋全貌）</li>
+          <li>Phone mockup：聚焦標題、避開暗紅</li>
+          <li>Collage/grid：抽出「幾何分割＋統一配色＋留白」單獨執行，不與風格混搭素材綁在一起評分</li>
+          <li>資訊型卡片圖文比不可逼近 1:1</li>
+        </ul>
+      </div>
+      <div class="spec-card">
+        <h4>內容配比與人格座標</h4>
+        <ul>
+          <li>50% UI＋懶人包（字少）／30% tips·data·警示（輕鬆）／20% 生活場景 UGC（真人 relatable）</li>
+          <li>Warm ＋ Approachable ＋ Trustworthy 為固定三角，其餘為個案風味</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="open">
+  <div class="wrap">
+    <div class="open-items">
+      <h4>待補（不可猜，需另一輪跟 Pei 確認）</h4>
+      <ul>
+        <li><b>真人生活情境拼貼</b>：Pei 認同「排版變化＝活潑」，但 MKT 提過「太複雜＝沒重點」——變化幅度的上限沒定案</li>
+        <li><b>原文／改寫對照卡</b>：Pei 唯一沒回應的手法（MKT 已判定避免，非必要但補齊較完整）</li>
+        <li>Makoto、小美兩位 MKT 的 reflect 開放意見留空，只有 rating＋人格標籤，樣本不完整</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p>本頁是 <code class="mono">trendlife-style-analysis</code> 的落地分析快照（2026-07-20），內容不會隨原站更新。設計師若持續留言，請回原協作頁查看最新回應：<a href="https://jiawen-shen.github.io/trendlife-style-analysis/">jiawen-shen.github.io/trendlife-style-analysis</a></p>
+    <p>資料來源：<a href="https://github.com/JiaWen-Shen/trendlife-style-analysis">JiaWen-Shen/trendlife-style-analysis</a>（<code class="mono">index.html</code> 內嵌 112 筆評分 rows + <code class="mono">opinions.json</code>）</p>
+  </div>
+</footer>
+
+</body>
+</html>
